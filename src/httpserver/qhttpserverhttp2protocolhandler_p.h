@@ -7,6 +7,7 @@
 #include <QtHttpServer/qthttpserverglobal.h>
 #include <QtHttpServer/qhttpserverrequest.h>
 #include <QtHttpServer/private/qhttpserverstream_p.h>
+#include <QtHttpServer/private/qhttpserverrequestfilter_p.h>
 #include <QtNetwork/private/hpack_p.h>
 #include <QtCore/qbytearray.h>
 #include <QtCore/qqueue.h>
@@ -45,7 +46,9 @@ class QHttpServerHttp2ProtocolHandler : public QHttpServerStream
     friend class QAbstractHttpServerPrivate;
 
 private:
-    QHttpServerHttp2ProtocolHandler(QAbstractHttpServer *server, QIODevice *socket);
+    QHttpServerHttp2ProtocolHandler(QAbstractHttpServer *server,
+                                    QIODevice *socket,
+                                    QHttpServerRequestFilter *filter);
 
     void responderDestroyed() final;
     void startHandlingRequest() final;
@@ -83,6 +86,7 @@ private:
     QAbstractHttpServer *m_server;
     QIODevice *m_socket;
     QTcpSocket *m_tcpSocket;
+    QHttpServerRequestFilter *m_filter;
     QHttpServerRequest m_request;
     QHttp2Connection *m_connection;
     QHash<quint32, QList<QMetaObject::Connection>> m_streamConnections;

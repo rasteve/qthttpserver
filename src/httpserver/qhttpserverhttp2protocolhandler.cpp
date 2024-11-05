@@ -5,6 +5,7 @@
 
 #include <QtCore/qloggingcategory.h>
 #include <QtHttpServer/qabstracthttpserver.h>
+#include <QtHttpServer/qhttpserverresponse.h>
 #include <QtNetwork/private/qhttp2connection_p.h>
 #include <QtNetwork/qtcpsocket.h>
 
@@ -30,11 +31,13 @@ void toHeaderPairs(HPack::HttpHeader &fields, const QHttpHeaders &headers)
 } // anonymous namespace
 
 QHttpServerHttp2ProtocolHandler::QHttpServerHttp2ProtocolHandler(QAbstractHttpServer *server,
-                                                                 QIODevice *socket)
+                                                                 QIODevice *socket,
+                                                                 QHttpServerRequestFilter *filter)
     : QHttpServerStream(server),
       m_server(server),
       m_socket(socket),
       m_tcpSocket(qobject_cast<QTcpSocket *>(socket)),
+      m_filter(filter),
       m_request(QHttpServerStream::initRequestFromSocket(m_tcpSocket))
 {
     socket->setParent(this);
@@ -269,8 +272,12 @@ void QHttpServerHttp2ProtocolHandler::onStreamHalfClosed(quint32 streamId)
     QHttpServerResponder responder(this);
     responder.d_ptr->m_streamId = streamId;
 
-    if (!m_server->handleRequest(m_request, responder))
+    if (!m_filter->isRequestWithinRate(m_tcpSocket->peerAddress())) {
+        responder.sendResponse(
+                QHttpServerResponse(QHttpServerResponder::StatusCode::TooManyRequests));
+    } else if (!m_server->handleRequest(m_request, responder)) {
         m_server->missingHandler(m_request, responder);
+    }
 }
 
 void QHttpServerHttp2ProtocolHandler::onStreamClosed(quint32 streamId)

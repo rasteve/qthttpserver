@@ -8,6 +8,7 @@
 
 #include <QtHttpServer/qthttpserverglobal.h>
 #include <QtHttpServer/qhttpserverwebsocketupgraderesponse.h>
+#include <QtHttpServer/qhttpserverconfiguration.h>
 
 #include <QtNetwork/qhostaddress.h>
 
@@ -53,6 +54,9 @@ public:
     QHttp2Configuration http2Configuration() const;
     void setHttp2Configuration(const QHttp2Configuration &configuration);
 #endif
+
+    void setConfiguration(const QHttpServerConfiguration &config);
+    QHttpServerConfiguration configuration() const;
 
 #if defined(QT_WEBSOCKETS_LIB)
 Q_SIGNALS:

@@ -10,6 +10,7 @@
 #include <QtHttpServer/qabstracthttpserver.h>
 #include <QtHttpServer/qhttpserverrequest.h>
 #include <QtHttpServer/qhttpserverresponder.h>
+#include <QtHttpServer/qhttpserverresponse.h>
 #include <QtNetwork/qlocalsocket.h>
 #include <QtNetwork/qtcpsocket.h>
 
@@ -216,7 +217,8 @@ struct IOChunkedTransfer
 
 
 QHttpServerHttp1ProtocolHandler::QHttpServerHttp1ProtocolHandler(QAbstractHttpServer *server,
-                                                                 QIODevice *socket)
+                                                                 QIODevice *socket,
+                                                                 QHttpServerRequestFilter *filter)
     : QHttpServerStream(server),
       server(server),
       socket(socket),
@@ -224,6 +226,7 @@ QHttpServerHttp1ProtocolHandler::QHttpServerHttp1ProtocolHandler(QAbstractHttpSe
 #if QT_CONFIG(localserver)
       localSocket(qobject_cast<QLocalSocket*>(socket)),
 #endif
+      m_filter(filter),
       request(initRequestFromSocket(tcpSocket))
 {
     socket->setParent(this);
@@ -360,8 +363,14 @@ void QHttpServerHttp1ProtocolHandler::handleReadyRead()
 
     socket->commitTransaction();
 
-    if (!server->handleRequest(request, responder))
+    QHostAddress peerAddress = tcpSocket ? tcpSocket->peerAddress()
+                                         : QHostAddress::LocalHost;
+    if (!m_filter->isRequestWithinRate(peerAddress)) {
+        responder.sendResponse(
+                QHttpServerResponse(QHttpServerResponder::StatusCode::TooManyRequests));
+    } else if (!server->handleRequest(request, responder)) {
         server->missingHandler(request, responder);
+    }
 
     if (handlingRequest)
         disconnect(socket, &QIODevice::readyRead, this, &QHttpServerHttp1ProtocolHandler::handleReadyRead);

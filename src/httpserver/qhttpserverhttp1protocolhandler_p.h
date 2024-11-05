@@ -7,6 +7,7 @@
 #include <QtHttpServer/qthttpserverglobal.h>
 #include <QtHttpServer/qhttpserverrequest.h>
 #include <QtHttpServer/private/qhttpserverstream_p.h>
+#include <QtHttpServer/private/qhttpserverrequestfilter_p.h>
 
 //
 //  W A R N I N G
@@ -34,7 +35,9 @@ class QHttpServerHttp1ProtocolHandler : public QHttpServerStream
     friend class QHttpServerResponder;
 
 private:
-    QHttpServerHttp1ProtocolHandler(QAbstractHttpServer *server, QIODevice *socket);
+    QHttpServerHttp1ProtocolHandler(QAbstractHttpServer *server,
+                                    QIODevice *socket,
+                                    QHttpServerRequestFilter *filter);
 
     void responderDestroyed() final;
     void startHandlingRequest() final;
@@ -67,6 +70,7 @@ private:
 #if QT_CONFIG(localserver)
     QLocalSocket *localSocket;
 #endif
+    QHttpServerRequestFilter *m_filter;
 
     enum class TransferState {
         Ready,

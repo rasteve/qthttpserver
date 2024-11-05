@@ -16,6 +16,8 @@
 
 #include <QtHttpServer/qabstracthttpserver.h>
 #include <QtHttpServer/qthttpserverglobal.h>
+#include <QtHttpServer/qhttpserverconfiguration.h>
+#include <QtHttpServer/private/qhttpserverrequestfilter_p.h>
 
 #include <private/qobject_p.h>
 
@@ -68,6 +70,8 @@ public:
 #if QT_CONFIG(ssl)
     QHttp2Configuration h2Configuration;
 #endif
+    QHttpServerConfiguration configuration;
+    QHttpServerRequestFilter requestFilter;
 };
 
 QT_END_NAMESPACE

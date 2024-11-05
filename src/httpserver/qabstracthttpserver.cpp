@@ -49,9 +49,9 @@ void QAbstractHttpServerPrivate::handleNewConnections()
         while (auto socket = qobject_cast<QSslSocket *>(sslServer->nextPendingConnection())) {
             if (socket->sslConfiguration().nextNegotiatedProtocol()
                             == QSslConfiguration::ALPNProtocolHTTP2) {
-                new QHttpServerHttp2ProtocolHandler(q, socket);
+                new QHttpServerHttp2ProtocolHandler(q, socket, &requestFilter);
             } else {
-                new QHttpServerHttp1ProtocolHandler(q, socket);
+                new QHttpServerHttp1ProtocolHandler(q, socket, &requestFilter);
             }
         }
         return;
@@ -62,7 +62,7 @@ void QAbstractHttpServerPrivate::handleNewConnections()
     Q_ASSERT(tcpServer);
 
     while (auto socket = tcpServer->nextPendingConnection())
-        new QHttpServerHttp1ProtocolHandler(q, socket);
+        new QHttpServerHttp1ProtocolHandler(q, socket, &requestFilter);
 }
 
 /*!
@@ -90,7 +90,7 @@ void QAbstractHttpServerPrivate::handleNewLocalConnections()
     Q_ASSERT(localServer);
 
     while (auto socket = localServer->nextPendingConnection())
-        new QHttpServerHttp1ProtocolHandler(q, socket);
+        new QHttpServerHttp1ProtocolHandler(q, socket, &requestFilter);
 }
 #endif
 
@@ -419,6 +419,19 @@ void QAbstractHttpServer::setHttp2Configuration(const QHttp2Configuration &confi
 }
 
 #endif
+
+void QAbstractHttpServer::setConfiguration(const QHttpServerConfiguration &config)
+{
+    Q_D(QAbstractHttpServer);
+    d->configuration = config;
+    d->requestFilter.setConfiguration(config);
+}
+
+QHttpServerConfiguration QAbstractHttpServer::configuration() const
+{
+    Q_D(const QAbstractHttpServer);
+    return d->configuration;
+}
 
 QT_END_NAMESPACE
 
