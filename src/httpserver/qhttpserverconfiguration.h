@@ -32,14 +32,9 @@ public:
 private:
     QExplicitlySharedDataPointer<QHttpServerConfigurationPrivate> d;
 
-    bool isEqual(const QHttpServerConfiguration &other) const noexcept;
-
-    friend bool operator==(const QHttpServerConfiguration &lhs,
-                           const QHttpServerConfiguration &rhs) noexcept
-    { return lhs.isEqual(rhs); }
-    friend bool operator!=(const QHttpServerConfiguration &lhs,
-                           const QHttpServerConfiguration &rhs) noexcept
-    { return !lhs.isEqual(rhs); }
+    friend Q_HTTPSERVER_EXPORT bool
+    comparesEqual(const QHttpServerConfiguration &lhs, const QHttpServerConfiguration &rhs) noexcept;
+    Q_DECLARE_EQUALITY_COMPARABLE(QHttpServerConfiguration)
 };
 Q_DECLARE_SHARED(QHttpServerConfiguration)
 

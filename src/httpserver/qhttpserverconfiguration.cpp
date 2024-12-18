@@ -105,12 +105,12 @@ unsigned int QHttpServerConfiguration::rateLimitPerSecond() const
 /*!
     \internal
 */
-bool QHttpServerConfiguration::isEqual(const QHttpServerConfiguration &other) const noexcept
+bool comparesEqual(const QHttpServerConfiguration &lhs, const QHttpServerConfiguration &rhs) noexcept
 {
-    if (d == other.d)
+    if (lhs.d == rhs.d)
         return true;
 
-    return d->rateLimit == other.d->rateLimit;
+    return lhs.d->rateLimit == rhs.d->rateLimit;
 }
 
 QT_END_NAMESPACE
