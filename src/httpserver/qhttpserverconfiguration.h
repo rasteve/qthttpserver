@@ -13,21 +13,21 @@ QT_BEGIN_NAMESPACE
 class QHttpServerConfigurationPrivate;
 QT_DECLARE_QESDP_SPECIALIZATION_DTOR_WITH_EXPORT(QHttpServerConfigurationPrivate, Q_HTTPSERVER_EXPORT)
 
-class Q_HTTPSERVER_EXPORT QHttpServerConfiguration
+class QHttpServerConfiguration
 {
 public:
-    QHttpServerConfiguration();
-    QHttpServerConfiguration(const QHttpServerConfiguration &other);
+    Q_HTTPSERVER_EXPORT QHttpServerConfiguration();
+    Q_HTTPSERVER_EXPORT QHttpServerConfiguration(const QHttpServerConfiguration &other);
     QHttpServerConfiguration(QHttpServerConfiguration &&other) noexcept = default;
-    QHttpServerConfiguration &operator = (const QHttpServerConfiguration &other);
+    Q_HTTPSERVER_EXPORT QHttpServerConfiguration &operator = (const QHttpServerConfiguration &other);
 
     QT_MOVE_ASSIGNMENT_OPERATOR_IMPL_VIA_PURE_SWAP(QHttpServerConfiguration)
     void swap(QHttpServerConfiguration &other) noexcept { d.swap(other.d); }
 
-    ~QHttpServerConfiguration();
+    Q_HTTPSERVER_EXPORT ~QHttpServerConfiguration();
 
-    void setRateLimitPerSecond(unsigned maxRequests);
-    unsigned rateLimitPerSecond() const;
+    Q_HTTPSERVER_EXPORT void setRateLimitPerSecond(unsigned maxRequests);
+    Q_HTTPSERVER_EXPORT unsigned rateLimitPerSecond() const;
 
 private:
     QExplicitlySharedDataPointer<QHttpServerConfigurationPrivate> d;
