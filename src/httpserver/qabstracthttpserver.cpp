@@ -13,8 +13,10 @@
 #include <QtCore/qloggingcategory.h>
 #include <QtNetwork/qtcpserver.h>
 #include <QtNetwork/qtcpsocket.h>
+#if QT_CONFIG(localserver)
 #include <QtNetwork/qlocalserver.h>
 #include <QtNetwork/qlocalsocket.h>
+#endif
 
 #if QT_CONFIG(ssl)
 #include <QtNetwork/qsslserver.h>

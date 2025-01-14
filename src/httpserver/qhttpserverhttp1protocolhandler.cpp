@@ -11,7 +11,9 @@
 #include <QtHttpServer/qhttpserverrequest.h>
 #include <QtHttpServer/qhttpserverresponder.h>
 #include <QtHttpServer/qhttpserverresponse.h>
+#if QT_CONFIG(localserver)
 #include <QtNetwork/qlocalsocket.h>
+#endif
 #include <QtNetwork/qtcpsocket.h>
 
 #include <private/qabstracthttpserver_p.h>
