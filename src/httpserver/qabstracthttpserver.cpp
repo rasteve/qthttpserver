@@ -422,6 +422,16 @@ void QAbstractHttpServer::setHttp2Configuration(const QHttp2Configuration &confi
 
 #endif
 
+/*!
+    \since 6.9
+
+    Sets this server's general configuration parameters to \a config.
+
+    \note The new configuration will be applied both to already established
+    connections and all next connections.
+
+    \sa configuration()
+*/
 void QAbstractHttpServer::setConfiguration(const QHttpServerConfiguration &config)
 {
     Q_D(QAbstractHttpServer);
@@ -429,6 +439,13 @@ void QAbstractHttpServer::setConfiguration(const QHttpServerConfiguration &confi
     d->requestFilter.setConfiguration(config);
 }
 
+/*!
+    \since 6.9
+
+    Returns this server's general configuration parameters.
+
+    \sa setConfiguration()
+*/
 QHttpServerConfiguration QAbstractHttpServer::configuration() const
 {
     Q_D(const QAbstractHttpServer);
