@@ -26,8 +26,8 @@ public:
 
     Q_HTTPSERVER_EXPORT ~QHttpServerConfiguration();
 
-    Q_HTTPSERVER_EXPORT void setRateLimitPerSecond(unsigned maxRequests);
-    Q_HTTPSERVER_EXPORT unsigned rateLimitPerSecond() const;
+    Q_HTTPSERVER_EXPORT void setRateLimitPerSecond(quint32 maxRequests);
+    Q_HTTPSERVER_EXPORT quint32 rateLimitPerSecond() const;
 
 private:
     QExplicitlySharedDataPointer<QHttpServerConfigurationPrivate> d;

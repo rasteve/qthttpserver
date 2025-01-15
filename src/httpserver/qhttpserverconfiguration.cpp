@@ -14,7 +14,7 @@ QT_BEGIN_NAMESPACE
 class QHttpServerConfigurationPrivate : public QSharedData
 {
 public:
-    unsigned rateLimit = 0;
+    quint32 rateLimit = 0;
 };
 
 QT_DEFINE_QESDP_SPECIALIZATION_DTOR(QHttpServerConfigurationPrivate)
@@ -68,7 +68,7 @@ QHttpServerConfiguration::~QHttpServerConfiguration()
 
     \sa rateLimitPerSecond(), QHttpServerResponder::StatusCode
 */
-void QHttpServerConfiguration::setRateLimitPerSecond(unsigned int maxRequests)
+void QHttpServerConfiguration::setRateLimitPerSecond(quint32 maxRequests)
 {
     d.detach();
     d->rateLimit = maxRequests;
@@ -80,7 +80,7 @@ void QHttpServerConfiguration::setRateLimitPerSecond(unsigned int maxRequests)
 
     \sa setRateLimitPerSecond()
 */
-unsigned int QHttpServerConfiguration::rateLimitPerSecond() const
+quint32 QHttpServerConfiguration::rateLimitPerSecond() const
 {
     return d->rateLimit;
 }
