@@ -272,6 +272,10 @@ void QHttpServerHttp2ProtocolHandler::onStreamHalfClosed(quint32 streamId)
     QHttpServerResponder responder(this);
     responder.d_ptr->m_streamId = streamId;
 
+    if (!m_filter->isRequestAllowed(m_tcpSocket->peerAddress())) {
+        responder.sendResponse(
+                QHttpServerResponse(QHttpServerResponder::StatusCode::Forbidden));
+    }
     if (!m_filter->isRequestWithinRate(m_tcpSocket->peerAddress())) {
         responder.sendResponse(
                 QHttpServerResponse(QHttpServerResponder::StatusCode::TooManyRequests));

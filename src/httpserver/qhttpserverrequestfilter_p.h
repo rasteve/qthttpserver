@@ -33,6 +33,8 @@ public:
 
     void setConfiguration(const QHttpServerConfiguration &config);
 
+    bool isRequestAllowed(QHostAddress peerAddress);
+
     bool isRequestWithinRate(QHostAddress peerAddress);
     bool isRequestWithinRate(QHostAddress peerAddress, const qint64 currTimeMSec);
 

@@ -27,6 +27,24 @@ void QHttpServerRequestFilter::setConfiguration(const QHttpServerConfiguration &
     m_config = config;
 }
 
+bool QHttpServerRequestFilter::isRequestAllowed(QHostAddress peerAddress)
+{
+    if (auto whitelist = m_config.whitelist(); !whitelist.empty()) {
+        for (auto &whitelistedSubnet : whitelist) {
+            if (peerAddress.isInSubnet(whitelistedSubnet))
+                return true;
+        }
+        return false;
+    }
+
+    for (auto &blacklistedSubnet : m_config.blacklist()) {
+        if (peerAddress.isInSubnet(blacklistedSubnet))
+            return false;
+    }
+
+    return true;
+}
+
 bool QHttpServerRequestFilter::isRequestWithinRate(QHostAddress peerAddress)
 {
     return isRequestWithinRate(peerAddress, QDateTime::currentMSecsSinceEpoch());

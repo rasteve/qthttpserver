@@ -15,6 +15,8 @@ class QHttpServerConfigurationPrivate : public QSharedData
 {
 public:
     quint32 rateLimit = 0;
+    QList<QPair<QHostAddress, int>> whitelist;
+    QList<QPair<QHostAddress, int>> blacklist;
 };
 
 QT_DEFINE_QESDP_SPECIALIZATION_DTOR(QHttpServerConfigurationPrivate)
@@ -83,6 +85,64 @@ void QHttpServerConfiguration::setRateLimitPerSecond(quint32 maxRequests)
 quint32 QHttpServerConfiguration::rateLimitPerSecond() const
 {
     return d->rateLimit;
+}
+
+/*!
+    Sets \a subnetList as the whitelist of allowed subnets.
+
+    When the list is not empty, only IP addresses in this list
+    will be allowed by QHttpServer. The whitelist takes priority
+    over the blacklist.
+
+    Each subnet is represented as a pair consisting of:
+    \list
+      \li A base IP address of type QHostAddress.
+      \li A CIDR prefix length of type int, which defines the subnet mask.
+    \endlist
+
+    To allow only a specific IP address, use a prefix length of 32 for IPv4
+    (e.g., "192.168.1.100/32") or 128 for IPv6 (e.g., "2001:db8::1/128").
+
+    \sa whitelist(), setBlacklist(), QHostAddress::parseSubnet()
+*/
+void QHttpServerConfiguration::setWhitelist(const QList<std::pair<QHostAddress, int>> &subnetList)
+{
+    d.detach();
+    d->whitelist = subnetList;
+}
+
+/*!
+    Returns the whitelist of subnets allowed by QHttpServer.
+
+    \sa setWhitelist()
+*/
+QList<std::pair<QHostAddress, int>> QHttpServerConfiguration::whitelist() const
+{
+    return d->whitelist;
+}
+
+/*!
+    Sets \a subnetList as the blacklist of subnets.
+
+    IP addresses in this list will be denied access by QHttpServer.
+    The blacklist is active only when the whitelist is empty.
+
+    \sa blacklist(), setWhitelist(), QHostAddress::parseSubnet()
+*/
+void QHttpServerConfiguration::setBlacklist(const QList<std::pair<QHostAddress, int>> &subnetList)
+{
+    d.detach();
+    d->blacklist = subnetList;
+}
+
+/*!
+    Returns the blacklist of subnets that are denied access by QHttpServer.
+
+    \sa setBlacklist()
+*/
+QList<std::pair<QHostAddress, int>> QHttpServerConfiguration::blacklist() const
+{
+    return d->blacklist;
 }
 
 /*!

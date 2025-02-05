@@ -367,6 +367,10 @@ void QHttpServerHttp1ProtocolHandler::handleReadyRead()
 
     QHostAddress peerAddress = tcpSocket ? tcpSocket->peerAddress()
                                          : QHostAddress::LocalHost;
+    if (!m_filter->isRequestAllowed(peerAddress)) {
+        responder.sendResponse(
+                QHttpServerResponse(QHttpServerResponder::StatusCode::Forbidden));
+    }
     if (!m_filter->isRequestWithinRate(peerAddress)) {
         responder.sendResponse(
                 QHttpServerResponse(QHttpServerResponder::StatusCode::TooManyRequests));
